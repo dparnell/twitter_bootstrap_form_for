@@ -1,7 +1,7 @@
 Twitter Bootstrap Form For
 ==========================
 
-*_WARNING! This is for Rails 4 and Bootstrap 3 (current in RC)._*
+*_WARNING! This is for Rails 3.2 and Bootstrap 3 (current in RC)._*
 
 `twitter_bootstrap_form_for` is a Rails FormBuilder DSL that, like Formtastic,
 makes it easier to create semantically awesome, readily-stylable, and
