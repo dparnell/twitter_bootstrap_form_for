@@ -10,8 +10,9 @@ class TwitterBootstrapFormFor::FormBuilder < ActionView::Helpers::FormBuilder
 
   INPUTS = [
     :select,
+    # all area, field, and select methods
     *ActionView::Helpers::FormBuilder.instance_methods.grep(%r{
-      _(area|field|select)$ # all area, field, and select methods
+      _(area|field|select)$
     }mx).map(&:to_sym)
   ]
 
@@ -126,12 +127,16 @@ class TwitterBootstrapFormFor::FormBuilder < ActionView::Helpers::FormBuilder
         elsif @options[:default_div_class].present?
           classes <<  @options[:default_div_class]
         end
-        classes << ('input-' + options.delete(:add_on).to_s) if options[:add_on]
+        if options[:add_on]
+          classes << ('input-' + options.delete(:add_on).to_s)
+        else
+          classes << 'input-append' if block.present?
+        end
         template.concat template.content_tag(:div, :class => classes.join(' ')) {
-          block.call if block.present? and classes.include?('input-prepend')
-          template.concat super(attribute, *(args << options))
+          block.call if block.present? && classes.include?('input-prepend')
+          template.concat super(attribute, *(args << options.reject{|k,v| k == :div_class}))
           template.concat error_span(attribute)
-          block.call if block.present? and classes.include?('input-append')
+          block.call if block.present? && classes.include?('input-append')
         }
       end
     end
@@ -139,7 +144,7 @@ class TwitterBootstrapFormFor::FormBuilder < ActionView::Helpers::FormBuilder
 
   TOGGLES.each do |toggle|
     define_method toggle do |attribute, *args, &block|
-      
+
       label       = args.first.nil? ? '' : args.shift
       target      = self.object_name.to_s + '_' + attribute.to_s
       label_attrs = toggle == :check_box ? { :for => target } : {}
